@@ -36,30 +36,53 @@
       color: var(--text-color);
     }
 
-    p {
-      padding: 0px 1rem 0px 1rem;
-      margin-bottom: 0px;
-    }
-
     .textarea-container {
       flex-grow: 1;
-      display: flex;
-      justify-content: space-between;
+      padding: .4rem;
+      display: grid;
+      grid-column-gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: min-content auto 1fr;
+      grid-template-areas:
+        "h h"
+        "a b"
+        "c d"
+
+      /* justify-content: space-between; */
       /* background: lightgray; */
     }
 
     textarea {
       resize: none;
-      height: 100%;
+      box-sizing: border-box;
+      padding: .4rem;
+      height: calc(100% - .4rem);
+      width: 100%;
     }
 
-    .iobox {
-      width: calc(50% - .8rem);
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
+    button {
+      font-size: inherit;
+      /* color: #505050; */
     }
 
+    .description {
+      grid-area: h;
+    }
+
+    .input-header {
+      grid-area: a;
+      padding-bottom: .4rem;
+    }
+    .output-header {
+      grid-area: b;
+    }
+
+    .input {
+      grid-area: c;
+    }
+    .output {
+      grid-area: d
+    }
   </style>
 </head>
 
@@ -67,11 +90,12 @@
   <h1>wasm-tools playground</h1>
 </header>
 
-<p>Translate the WebAssembly text format to binary using <a href="https://github.com/bytecodealliance/wasm-tools"><code>wasm-tools parse</code></a>.</p>
-
 <div class="textarea-container">
-  <div class="iobox">
-    WAT
+  <div class="description">
+    <p>Translate the WebAssembly text format to binary using <a href="https://github.com/bytecodealliance/wasm-tools"><code>wasm-tools parse</code></a>.</p>
+  </div>
+  <div class="input-header">wat</div>
+  <div class="input">
     <textarea id="input">(module
   (import "foo" "bar" (func (param f32)))
   (memory (data "hi"))
@@ -82,11 +106,13 @@
   (func (type 1)
     i32.const 42
     drop)
-  (export "e" (func 1)))
-</textarea>
+  (export "e" (func 1)))</textarea>
   </div>
-  <div class="iobox">
-    WASM
+
+  <div class="output-header">
+    wasm <button id="download">Download</button>
+  </div>
+  <div class="output">
     <textarea id="output"></textarea>
   </div>
 </div>
