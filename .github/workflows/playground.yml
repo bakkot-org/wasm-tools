@@ -27,7 +27,8 @@ jobs:
         with:
           node-version: 20
       - uses: bytecodealliance/wasmtime/.github/actions/install-rust@v20.0.0
-      - run: cargo install cargo-component --locked
+      - uses: cargo-bins/cargo-binstall@v1.6.9
+      - run: cargo binstall cargo-component
       - run: rustup component add rustfmt # needed for cargo-component, apparently?
       - run: npm ci
         working-directory: playground
