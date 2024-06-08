@@ -21,17 +21,33 @@ function base64(bytes: Uint8Array) {
 
 let input: HTMLTextAreaElement = document.querySelector('#input')!;
 let output: HTMLTextAreaElement = document.querySelector('#output')!;
+let downloadButton: HTMLButtonElement = document.querySelector('#download')!;
 
+let lastBytes: Uint8Array;
 function update() {
   try {
-    output.value = base64(parse(input.value));
+    lastBytes = parse(input.value);
+    output.value = base64(lastBytes);
+    downloadButton.disabled = false;
   } catch (e) {
     (window as any).error = e;
     output.value = (e as Error).message;
+    downloadButton.disabled = true;
+    return;
   }
 }
 
 update();
-input.addEventListener('input', debounce(update, 100e0));
+input.addEventListener('input', debounce(update, 100));
+
+downloadButton.addEventListener('click', () => {
+  let blob = new Blob([lastBytes], { type: 'application/wasm' });
+  let link = document.createElement('a');
+  let url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = 'wasm-tools-parse-output.wasm';
+  link.click();
+  URL.revokeObjectURL(url);
+});
 
 (globalThis as any).parse = parse;
